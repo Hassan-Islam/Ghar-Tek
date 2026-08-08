@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Food Delivery - My Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#636262",
+                      "on-tertiary-fixed": "#321300",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#ffdbcc",
+                      "surface-dim": "#dadada",
+                      "on-surface-variant": "#5a4136",
+                      "surface-tint": "#a04100",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2f3131",
+                      "tertiary-fixed": "#ffdbc8",
+                      "surface-container-low": "#f3f3f3",
+                      "on-surface": "#1a1c1c",
+                      "surface-container-high": "#e8e8e8",
+                      "outline-variant": "#e2bfb0",
+                      "secondary-container": "#e2dfde",
+                      "primary-fixed-dim": "#ffb693",
+                      "outline": "#8e7164",
+                      "on-tertiary-fixed-variant": "#743500",
+                      "tertiary-container": "#dd8243",
+                      "surface": "#f9f9f9",
+                      "background": "#f9f9f9",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#f9f9f9",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#7a3000",
+                      "on-background": "#1a1c1c",
+                      "tertiary-fixed-dim": "#ffb68a",
+                      "on-secondary-fixed-variant": "#474746",
+                      "on-primary-fixed": "#351000",
+                      "on-tertiary-container": "#532400",
+                      "primary": "#a04100",
+                      "tertiary": "#95490d",
+                      "primary-container": "#ff6b00",
+                      "surface-container": "#eeeeee",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "secondary": "#5f5e5e",
+                      "secondary-fixed": "#e5e2e1",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#f1f1f1",
+                      "on-primary-container": "#572000",
+                      "surface-variant": "#e2e2e2",
+                      "inverse-primary": "#ffb693"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "24px",
+                      "stack-sm": "12px",
+                      "container-margin": "20px",
+                      "gutter": "16px",
+                      "base": "8px",
+                      "stack-lg": "40px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Plus Jakarta Sans"],
+                      "label-sm": ["Be Vietnam Pro"],
+                      "label-md": ["Be Vietnam Pro"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "headline-xl": ["Plus Jakarta Sans"],
+                      "body-lg": ["Be Vietnam Pro"],
+                      "body-md": ["Be Vietnam Pro"],
+                      "headline-md": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9f9;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex justify-center min-h-screen">
+<!-- App Container -->
+<div class="relative flex h-full min-h-screen w-full max-w-md flex-col bg-[#fcfaf8] shadow-2xl overflow-x-hidden font-['Plus_Jakarta_Sans']">
+<!-- Header -->
+<div class="flex items-center bg-[#fcfaf8] p-4 pb-2 justify-between">
+<h2 class="text-[#1d130c] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Orders</h2>
+</div>
+<!-- Tabs -->
+<div class="pb-3">
+<div class="flex border-b border-[#ead9cd] px-4 justify-between">
+<a class="flex flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 flex-1 border-b-transparent text-[#a16b45]" href="#active">
+<p class="text-sm font-bold leading-normal tracking-[0.015em] text-[#a16b45]">Active Orders</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 flex-1 border-b-[#ff6a00] text-[#1d130c]" href="#past">
+<p class="text-sm font-bold leading-normal tracking-[0.015em] text-[#1d130c]">Order History</p>
+</a>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Active Order Section -->
+<section class="px-4 pt-4" id="active">
+<h3 class="text-[#1d130c] text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">In Progress</h3>
+<div class="flex flex-col rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-surface-container-highest p-5 gap-4">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<p class="text-[#1d130c] text-xl font-extrabold leading-tight">Burger King</p>
+<p class="text-primary font-semibold text-sm">Estimated: 12:45 PM</p>
+</div>
+<div class="h-12 w-12 rounded-lg bg-cover bg-center" data-alt="A professional studio photograph of a delicious flame-grilled beef burger with melting cheddar cheese, crisp lettuce, and ripe tomatoes on a toasted sesame seed bun. The image is set against a clean, warm background with soft, diffused lighting, emphasizing the appetizing textures of the food for a high-end food delivery application UI." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCSojc1UTQWzV6OwQ40Z5PEkunRXbHGblCD5PGqbTtBapEj9Ii7Fgn3QyY_6LqD592V7HUfWBpBH4VRDc3SGQz1KjmthvZVrF_3WZbMkTPoedPe6XN-QpPvRZo07CaZYu_L8AurdGqlbjTK5ZFzJcf5HHrEe3FEpU5H6xtRyyUa5h1cwHduKLxQrTuVArnZ-SlHsHcOOQsgYjifcJ284sHQd500o7Jned4KF2Pg3LwCycJREOn_NaxXy1U0uToavyAOYqRDT-ST6Q0&quot;);"></div>
+</div>
+<!-- Progress Bar -->
+<div class="mt-2">
+<div class="flex justify-between mb-2">
+<span class="text-xs font-semibold text-primary">On the way</span>
+<span class="text-xs text-on-secondary-container">12 mins left</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-primary-container h-2 rounded-full transition-all duration-1000" style="width: 82%;"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-secondary">
+<span class="">Order Confirmed</span>
+<span class="">Preparing</span>
+<span class="font-bold text-primary">On the way</span>
+<span class="">Delivered</span>
+</div>
+
+<!-- Cancel Order Progress -->
+<div id="cancel-progress-container" class="mt-4 mb-2 p-3.5 rounded-xl bg-red-50/50 border border-red-100 flex flex-col gap-2.5 shadow-sm transition-all duration-300">
+    <div class="flex justify-between items-center text-[13px] font-bold text-red-600 tracking-tight">
+        <span>( You can Cancel this Order in <span id="cancel-timer-text">60</span>Sec )</span>
+    </div>
+    <div class="w-full bg-red-100/70 rounded-full h-1.5 overflow-hidden">
+        <div id="cancel-progress-bar" class="bg-red-500 h-1.5 rounded-full transition-all duration-1000 ease-linear" style="width: 100%;"></div>
+    </div>
+</div>
+
+</div>
+<!-- Delivery Person Info -->
+<button onclick="window.location.href='chat.html'" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-4 bg-gradient-to-r from-primary-container to-primary text-white gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98] mb-4">
+    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 0;">chat</span>
+    <span class="text-[15px] font-bold tracking-wide">Message with GharTek</span>
+</button>
+<h4 class="text-[#1d130c] text-[17px] font-extrabold leading-tight tracking-[-0.015em] pb-3 pt-1">Contact Rider</h4>
+<div class="flex items-center gap-4 p-3.5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-highest">
+<div class="h-11 w-11 rounded-full bg-cover bg-center shadow-sm" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuD9YL9DGrEJf-1nj4ag4O2_mKflxihEj4xTpam6YoTN3a1U7SxFc1IyXGWEhxbGkbnI8dBR4CzlsTqBkxHfmVIGs-86cZk1YEG97XQ8XGO2ANWMoSwNFMkqSN1o_DlaxzYbhafCQUf1gwR4lsv80QNT0uAgEhbYcuojwIk0sSqyZahpW4CA53tixRd99kveTz3kU9tigjCmWiyohhBbORH9MwYa1M34hAIK0-ny5DoQu9MpdIbEbKso6QiN2G7yXxEfjZ3YYeRaBR8&quot;);"></div>
+<div class="flex-1">
+<p class="text-[15px] font-extrabold text-[#1d130c]">Marco S.</p>
+<div class="flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined text-[14px] text-[#ff6a00]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span><span class="material-symbols-outlined text-[14px] text-[#ff6a00]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span><span class="material-symbols-outlined text-[14px] text-[#ff6a00]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span><span class="material-symbols-outlined text-[14px] text-[#ff6a00]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span><span class="material-symbols-outlined text-[14px] text-[#ff6a00]" style="font-variation-settings: &quot;FILL&quot; 0;">star_half</span></div>
+</div>
+<div class="flex gap-2">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-primary shadow-sm border border-surface-container-highest transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[20px]">call</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-primary shadow-sm border border-surface-container-highest transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+</button>
+</div>
+</div><div class="mt-4 pt-5 border-t border-dashed border-surface-container-highest"><h4 class="text-[#1d130c] text-[17px] font-extrabold leading-tight tracking-[-0.015em] pb-3">Payment Details</h4><div class="flex flex-col gap-2"><div class="flex justify-between items-center bg-surface-container-lowest p-3 rounded-xl border border-surface-container-highest shadow-sm"><span class="text-secondary font-semibold text-sm">Total Payment</span><span class="text-primary font-extrabold text-lg">$19.50</span></div></div></div>
+
+</div>
+</section>
+<!-- Past Orders Section -->
+<section class="px-4 py-5" id="past">
+<div class="flex items-center justify-between pb-4">
+<h3 class="text-[#1d130c] text-[22px] font-bold leading-tight tracking-[-0.015em]">Past Orders</h3>
+<button class="text-primary text-sm font-bold">View all</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Past Order Card 1 -->
+<div class="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm border border-surface-container">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded-lg bg-cover bg-center" data-alt="A vibrant and fresh salad bowl with grilled chicken, avocado, cherry tomatoes, and mixed greens, presented on a minimalist ceramic plate. The lighting is bright and natural, casting soft shadows, captured in a clean culinary photography style that emphasizes freshness and healthy eating." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuB7Kxdl5iYdFvcP10OI_3GWas0dbGuCfQeleetk8YiCCOD2_-4zMtUflvuEaKHvxolkP492DREah3d0QHIG7aOXnSkB5TOYn0PwPvSlGbGxCNwJKQVgz2Qzj_6m63_FyYEiEBkkej4GNbJorASR8LSyIz21VGusRtV09aV30XJPDpMEi2Sh2XfLHvu50MQdl4Bce8wbCcuU4KJvvM7PEqKDkBHxX3_jOR6AWmV-LVJz_H2dk5hPANkztpsibgqtu7tgFSl9F7smoiU&quot;);"></div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-bold text-[#1d130c]">The Green Table</h4>
+<p class="text-xs text-secondary font-medium">Oct 12, 2023</p>
+</div>
+<p class="text-sm text-on-secondary-container line-clamp-1">1x Garden Salad, 1x Avocado Toast, 2x Fresh Orange Juice</p>
+<p class="text-sm font-bold text-primary mt-1">$32.50</p>
+</div>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 h-9 rounded-lg bg-surface-container text-[#1d130c] text-sm font-bold">Get Help</button>
+<button class="flex-1 h-9 rounded-lg border border-primary text-primary text-sm font-bold flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+                                Reorder
+                            </button>
+</div>
+</div>
+<!-- Past Order Card 2 -->
+<div class="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm border border-surface-container">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded-lg bg-cover bg-center" data-alt="A professional top-down food shot of a steaming hot pepperoni pizza with gooey melted mozzarella cheese on a thin, crispy artisanal crust. The background is a rustic dark wood table, but the lighting is bright and focused on the pizza, highlighting the glistening oil and golden-brown edges." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuA1y4g-1AMeN6CH8tmMNUXx_kgQL8yVx3BG8HcBFtq1T-_pa_jLV2okE7r7tV1x2rP-LflvkMgTrGMuxGHB69dbhd_ewxLToscbyNLYYEW-FzebJ6l7a-V_I_-_tV5f5xNSo-fQ6iaJ1fMQU8-pJdu0UWUHkU8B83-fOYjwKPUfJY_D19al756YI6xFLMw8VlMfV_Aai23wakwlNzJXlSbGJedsXkhCxNKTel1ThEMLWgjZyj3k9ZYdWHjiuyJKj0JBZT5fidhV5tA&quot;);"></div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-bold text-[#1d130c]">Joe's Pizzeria</h4>
+<p class="text-xs text-secondary font-medium">Oct 08, 2023</p>
+</div>
+<p class="text-sm text-on-secondary-container line-clamp-1">2x Large Pepperoni Pizza, 1x Garlic Breadsticks</p>
+<p class="text-sm font-bold text-primary mt-1">$45.00</p>
+</div>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 h-9 rounded-lg bg-surface-container text-[#1d130c] text-sm font-bold">Get Help</button>
+<button class="flex-1 h-9 rounded-lg border border-primary text-primary text-sm font-bold flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+                                Reorder
+                            </button>
+</div>
+</div>
+<!-- Past Order Card 3 -->
+<div class="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm border border-surface-container">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded-lg bg-cover bg-center" data-alt="Authentic Japanese ramen bowl with perfectly soft-boiled egg halves, sliced chashu pork, nori seaweed, and spring onions in a rich, flavorful broth. High-contrast studio lighting accentuates the steam and texture of the ingredients, presented in a minimalist ceramic bowl against a clean neutral background." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBl7OQjgROf9owrPtCSKmmx3zVSCmzv5ozqsK3xw8UKsg0OLOzL3jhNydqED9uryYglC9yVeb1xNZyIgrh1Phy0ifqsrQK8MApdTbpAAKhgdIteqWNkDXpKUXXLtlP01kBHmqpXbt-KVPmhZt9zlj73IHNd7TTj7RTMJfFfPHCDpiFgkuAByz8gomJphW6XGWrP6Slood0Y3Rt1-OnRGb7JcB1Gk6Geh_E_icZv5syfbk3VYozoy5lG4iT8K3k5CXbZ3IoQv-ywVF8&quot;);"></div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-bold text-[#1d130c]">Miso Happy Ramen</h4>
+<p class="text-xs text-secondary font-medium">Sep 30, 2023</p>
+</div>
+<p class="text-sm text-on-secondary-container line-clamp-1">1x Tonkotsu Ramen Special, 1x Gyoza (6pcs)</p>
+<p class="text-sm font-bold text-primary mt-1">$19.50</p>
+</div>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 h-9 rounded-lg bg-surface-container text-[#1d130c] text-sm font-bold">Get Help</button>
+<button class="flex-1 h-9 rounded-lg border border-primary text-primary text-sm font-bold flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+                                Reorder
+                            </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Shared Bottom Nav Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex flex-col max-w-md mx-auto">
+
+</div>
+</div>
+<script>
+        // Simple tab switching animation/logic
+        const tabs = document.querySelectorAll('a[href^="#"]');
+        const sections = {
+            active: document.getElementById('active'),
+            past: document.getElementById('past')
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const targetId = tab.getAttribute('href').substring(1);
+                if (sections[targetId]) {
+                    // Update tab visuals
+                    tabs.forEach(t => {
+                        t.classList.remove('border-b-[#ff6a00]', 'text-[#1d130c]');
+                        t.classList.add('border-b-transparent', 'text-[#a16b45]');
+                        const p = t.querySelector('p');
+                        p.classList.remove('text-[#1d130c]');
+                        p.classList.add('text-[#a16b45]');
+                    });
+                    
+                    tab.classList.add('border-b-[#ff6a00]', 'text-[#1d130c]');
+                    tab.classList.remove('border-b-transparent', 'text-[#a16b45]');
+                    const p = tab.querySelector('p');
+                    p.classList.add('text-[#1d130c]');
+                    p.classList.remove('text-[#a16b45]');
+                }
+            });
+        });
+
+        // Simulating some dynamic interaction for the progress bar
+        const progressBar = document.querySelector('.bg-primary-container');
+        if (progressBar) {
+            setTimeout(() => {
+                progressBar.style.width = '82%';
+            }, 2000);
+        }
+    </script>
+
+
+
+
+<script class="">
+    (function() {
+        let timeLeft = 60;
+        const timerText = document.getElementById('cancel-timer-text');
+        const progressBar = document.getElementById('cancel-progress-bar');
+        const container = document.getElementById('cancel-progress-container');
+
+        if (!timerText || !progressBar) return;
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            
+            // Update text
+            timerText.textContent = String(timeLeft).padStart(2, '0');
+            
+            // Update progress bar width
+            const percentage = (timeLeft / 60) * 100;
+            progressBar.style.width = `${percentage}%`;
+
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                container.style.opacity = '0.5';
+                container.style.filter = 'grayscale(100%)';
+                const label = container.querySelector('span');
+                if(label) label.textContent = 'Cancellation Period Ended';
+            }
+        }, 1000);
+    })();
+</script></body></html>

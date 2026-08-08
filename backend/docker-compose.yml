@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ghartek_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ghartek
+      POSTGRES_PASSWORD: ghartek_local_pw
+      POSTGRES_DB: ghartek
+    ports:
+      - "5433:5432"
+    volumes:
+      - ghartek_pg_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ghartek -d ghartek"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ghartek_pg_data:

@@ -1,0 +1,8 @@
+# Automatic HTTPS via Let's Encrypt. SITE_ADDRESS is a public hostname that
+# resolves to this droplet (e.g. 203-0-113-9.sslip.io, which maps to the IP
+# 203.0.113.9 without needing to buy a domain). Caddy also proxies the
+# WebSocket upgrade at /rtdb transparently.
+{$SITE_ADDRESS} {
+	encode gzip
+	reverse_proxy backend:8080
+}

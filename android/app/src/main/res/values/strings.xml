@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GharTek</string>
+    <string name="title_activity_main">GharTek</string>
+    <string name="admob_app_id">ca-app-pub-6268553487157911~5016684261</string>
+    <!-- Add more strings as needed -->
+</resources>

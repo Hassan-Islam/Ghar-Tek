@@ -1,0 +1,1118 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../services/auth_service.dart';
+import 'login_page.dart';
+import 'edit_profile_page.dart';
+import 'my_orders_page.dart';
+import 'legal/terms_conditions_page.dart';
+import 'legal/privacy_policy_page.dart';
+import 'legal/about_us_page.dart';
+import 'legal/refund_policy_page.dart';
+
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  // ── Theme ──────────────────────────────────────────────────────────────────
+  static const Color _primary = Color(0xFFFF6B00);
+  static const Color _primaryLight = Color(0xFFFFF3E8);
+  static const Color _bg = Color(0xFFFFFBF7);
+
+  final AuthService _authService = AuthService();
+  User? _currentUser;
+  Map<String, dynamic>? _userData;
+  bool _isLoading = true;
+  bool _notificationsEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    setState(() => _isLoading = true);
+    _currentUser = _authService.currentUser;
+    if (_currentUser != null) {
+      _userData = await _authService.getUserData(_currentUser!.uid);
+    }
+    if (mounted) setState(() => _isLoading = false);
+  }
+
+  Future<void> _handleLogout() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)),
+        title: const Text('Logout',
+            style: TextStyle(fontWeight: FontWeight.w800)),
+        content:
+            const Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('Cancel',
+                  style: TextStyle(color: Colors.grey[600]))),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true) {
+      await _authService.signOut();
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (_) => false,
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: _bg,
+      body: SafeArea(
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                    color: _primary))
+            : RefreshIndicator(
+                color: _primary,
+                onRefresh: _loadUserData,
+                child: SingleChildScrollView(
+                  physics:
+                      const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      _buildProfileHero(),
+                      _buildQuickStats(),
+                      const SizedBox(height: 8),
+                      _buildMenuGroup(
+                        icon: Icons.manage_accounts_rounded,
+                        title: 'Account',
+                        color: _primary,
+                        items: _accountItems(),
+                      ),
+                      const SizedBox(height: 10),
+                      _buildMenuGroup(
+                        icon: Icons.gavel_rounded,
+                        title: 'Legal & Policies',
+                        color: Colors.indigo,
+                        items: _legalItems(),
+                      ),
+                      const SizedBox(height: 10),
+                      _buildMenuGroup(
+                        icon: Icons.help_outline_rounded,
+                        title: 'Support',
+                        color: Colors.teal,
+                        items: _supportItems(),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildLogoutButton(),
+                      const SizedBox(height: 30),
+                      _buildFooter(),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
+                ),
+              ),
+      ),
+    );
+  }
+
+  // ── Profile Hero ──────────────────────────────────────────────────────────
+  Widget _buildProfileHero() {
+    final name = _userData?['name'] ??
+        _currentUser?.displayName ??
+        'User';
+    final phone = _userData?['phoneNumber'] ??
+        _currentUser?.phoneNumber ??
+        '';
+    final email = _currentUser?.email ?? '';
+    final contact =
+        phone.isNotEmpty ? phone : email;
+    final initial =
+        name.isNotEmpty ? name[0].toUpperCase() : 'U';
+
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+              color: Color(0x08000000),
+              blurRadius: 10,
+              offset: Offset(0, 4))
+        ],
+      ),
+      child: Column(
+        children: [
+          // Top gradient banner
+          Container(
+            height: 90,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFFF6B00), Color(0xFFFF9A3D)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+          // Avatar + info overlapping
+          Transform.translate(
+            offset: const Offset(0, -50),
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: _primaryLight,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Colors.white, width: 4),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                _primary.withOpacity(0.25),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          )
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          initial,
+                          style: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w900,
+                            color: _primary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => EditProfilePage(
+                                  userData: _userData),
+                            ),
+                          );
+                          _loadUserData();
+                        },
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: _primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: Colors.white,
+                                width: 2),
+                          ),
+                          child: const Icon(
+                              Icons.edit_rounded,
+                              color: Colors.white,
+                              size: 14),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF1A1A1A),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                if (contact.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: _primaryLight,
+                      borderRadius:
+                          BorderRadius.circular(20),
+                      border: Border.all(
+                          color:
+                              _primary.withOpacity(0.2)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                            Icons.verified_rounded,
+                            color: _primary,
+                            size: 13),
+                        const SizedBox(width: 5),
+                        Text(
+                          contact,
+                          style: const TextStyle(
+                            color: _primary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                // Edit Profile button
+                GestureDetector(
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditProfilePage(
+                            userData: _userData),
+                      ),
+                    );
+                    _loadUserData();
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 40),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12),
+                    decoration: BoxDecoration(
+                      color: _primaryLight,
+                      borderRadius:
+                          BorderRadius.circular(14),
+                      border: Border.all(
+                          color:
+                              _primary.withOpacity(0.2)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.edit_outlined,
+                            color: _primary, size: 16),
+                        SizedBox(width: 6),
+                        Text(
+                          'Edit Profile',
+                          style: TextStyle(
+                            color: _primary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Quick Stats ───────────────────────────────────────────────────────────
+  Widget _buildQuickStats() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x06000000),
+              blurRadius: 10,
+              offset: Offset(0, 3)),
+        ],
+      ),
+      child: Row(
+        children: [
+          _statItem('🛵', 'My Orders', 'View all', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const MyOrdersPage()),
+            );
+          }),
+          _vertDivider(),
+          _statItem('📍', 'Addresses', 'Saved', () {}),
+          _vertDivider(),
+          _statItem('💳', 'Payments', 'Methods', _showPaymentMethods),
+        ],
+      ),
+    );
+  }
+
+  Widget _statItem(String emoji, String title, String sub,
+      VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 24)),
+            const SizedBox(height: 6),
+            Text(title,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    color: Color(0xFF1A1A1A))),
+            const SizedBox(height: 2),
+            Text(sub,
+                style: const TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFF999999))),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _vertDivider() {
+    return Container(
+      height: 50,
+      width: 1,
+      color: const Color(0xFFF0EDE8),
+    );
+  }
+
+  // ── Menu Group ─────────────────────────────────────────────────────────────
+  Widget _buildMenuGroup({
+    required IconData icon,
+    required String title,
+    required Color color,
+    required List<_MenuItem> items,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x06000000),
+              blurRadius: 10,
+              offset: Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.fromLTRB(18, 16, 18, 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius:
+                        BorderRadius.circular(10),
+                  ),
+                  child:
+                      Icon(icon, color: color, size: 18),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+              height: 1,
+              indent: 18,
+              endIndent: 18,
+              color: Color(0xFFF5F3F0)),
+          ...items.asMap().entries.map((e) {
+            final i = e.key;
+            final item = e.value;
+            return Column(
+              children: [
+                _menuTile(item),
+                if (i < items.length - 1)
+                  const Divider(
+                      height: 1,
+                      indent: 68,
+                      endIndent: 18,
+                      color: Color(0xFFF5F3F0)),
+              ],
+            );
+          }),
+          const SizedBox(height: 4),
+        ],
+      ),
+    );
+  }
+
+  Widget _menuTile(_MenuItem item) {
+    return InkWell(
+      onTap: item.onTap,
+      borderRadius: BorderRadius.circular(0),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: 18, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: item.bgColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child:
+                  Icon(item.icon, color: item.iconColor, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                  if (item.subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      item.subtitle!,
+                      style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF999999)),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (item.trailing != null) item.trailing!
+            else
+              const Icon(Icons.chevron_right_rounded,
+                  color: Color(0xFFCCC8C2), size: 22),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Menu Item Builders ────────────────────────────────────────────────────
+  List<_MenuItem> _accountItems() {
+    return [
+      _MenuItem(
+        icon: Icons.inventory_2_outlined,
+        title: 'My Orders',
+        subtitle: 'Track and manage your orders',
+        bgColor: _primaryLight,
+        iconColor: _primary,
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const MyOrdersPage())),
+      ),
+      _MenuItem(
+        icon: Icons.location_on_outlined,
+        title: 'Saved Addresses',
+        subtitle: 'Manage delivery addresses',
+        bgColor: Colors.blue[50]!,
+        iconColor: Colors.blue[600]!,
+        onTap: () => _showAddressesSheet(),
+      ),
+      _MenuItem(
+        icon: Icons.notifications_none_rounded,
+        title: 'Notifications',
+        subtitle: 'Manage your alerts',
+        bgColor: Colors.purple[50]!,
+        iconColor: Colors.purple[600]!,
+        onTap: () {},
+        trailing: Switch.adaptive(
+          value: _notificationsEnabled,
+          onChanged: (v) => setState(() => _notificationsEnabled = v),
+          activeColor: _primary,
+        ),
+      ),
+    ];
+  }
+
+  List<_MenuItem> _legalItems() {
+    return [
+      _MenuItem(
+        icon: Icons.shield_outlined,
+        title: 'Privacy Policy',
+        subtitle: 'How we handle your data',
+        bgColor: Colors.indigo[50]!,
+        iconColor: Colors.indigo,
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const PrivacyPolicyPage())),
+      ),
+      _MenuItem(
+        icon: Icons.description_outlined,
+        title: 'Terms & Conditions',
+        subtitle: 'Our service terms',
+        bgColor: Colors.indigo[50]!,
+        iconColor: Colors.indigo,
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(
+                builder: (_) => const TermsConditionsPage())),
+      ),
+      _MenuItem(
+        icon: Icons.currency_exchange_rounded,
+        title: 'Refund Policy',
+        subtitle: 'Cancellations and refunds',
+        bgColor: Colors.indigo[50]!,
+        iconColor: Colors.indigo,
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const RefundPolicyPage())),
+      ),
+      _MenuItem(
+        icon: Icons.info_outline_rounded,
+        title: 'About GharTek',
+        subtitle: 'Version 1.0.5',
+        bgColor: Colors.indigo[50]!,
+        iconColor: Colors.indigo,
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const AboutUsPage())),
+      ),
+    ];
+  }
+
+  List<_MenuItem> _supportItems() {
+    return [
+      _MenuItem(
+        icon: Icons.headset_mic_outlined,
+        title: 'Help Center',
+        subtitle: 'Get help with your orders',
+        bgColor: Colors.teal[50]!,
+        iconColor: Colors.teal,
+        onTap: () => _showHelpDialog(),
+      ),
+      _MenuItem(
+        icon: Icons.chat_bubble_outline_rounded,
+        title: 'WhatsApp Support',
+        subtitle: 'Chat on +92 313 1426498',
+        bgColor: const Color(0xFFE8F5E9),
+        iconColor: const Color(0xFF25D366),
+        onTap: () => _launchWhatsApp(),
+      ),
+      _MenuItem(
+        icon: Icons.phone_outlined,
+        title: 'Call Support',
+        subtitle: '+92 313 1426498',
+        bgColor: Colors.blue[50]!,
+        iconColor: Colors.blue[700]!,
+        onTap: () => _callSupport(),
+      ),
+      _MenuItem(
+        icon: Icons.star_outline_rounded,
+        title: 'Rate the App',
+        subtitle: 'Share your experience',
+        bgColor: Colors.amber[50]!,
+        iconColor: Colors.amber[700]!,
+        onTap: () => _showComingSoon('Rate the App'),
+      ),
+    ];
+  }
+
+  // ── Logout Button ─────────────────────────────────────────────────────────
+  Widget _buildLogoutButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GestureDetector(
+        onTap: _handleLogout,
+        child: Container(
+          height: 54,
+          decoration: BoxDecoration(
+            color: Colors.red[50],
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.red[100]!),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.logout_rounded,
+                  color: Colors.red[600], size: 20),
+              const SizedBox(width: 10),
+              Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.red[600],
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Footer ────────────────────────────────────────────────────────────────
+  Widget _buildFooter() {
+    return Column(
+      children: [
+        RichText(
+          text: const TextSpan(
+            style: TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
+            children: [
+              TextSpan(text: 'GharTek  ·  '),
+              TextSpan(text: 'Version 1.0.5'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Made with ❤️ in Vehari',
+          style:
+              TextStyle(fontSize: 11, color: Color(0xFFCCCCCC)),
+        ),
+        const SizedBox(height: 14),
+        TextButton(
+          onPressed: () => _showDeleteDialog(),
+          child: const Text(
+            'Delete Account',
+            style: TextStyle(
+                color: Colors.red,
+                fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Dialogs ───────────────────────────────────────────────────────────────
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)),
+        title: const Text('Help & Support',
+            style: TextStyle(fontWeight: FontWeight.w800)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text('Need help? Contact us:',
+                style:
+                    TextStyle(fontWeight: FontWeight.w600)),
+            SizedBox(height: 12),
+            Row(children: [
+              Text('📞', style: TextStyle(fontSize: 16)),
+              SizedBox(width: 8),
+              Text('+92 313 1426498',
+                  style:
+                      TextStyle(fontWeight: FontWeight.w500)),
+            ]),
+            SizedBox(height: 8),
+            Row(children: [
+              Text('✉️', style: TextStyle(fontSize: 16)),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text('ghartekinfo@gmail.com',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500)),
+              ),
+            ]),
+            SizedBox(height: 10),
+            Text(
+              'Or use the WhatsApp chat button.',
+              style: TextStyle(
+                  fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showComingSoon(String feature) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('$feature — coming soon!'),
+      backgroundColor: _primary,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12)),
+      duration: const Duration(seconds: 2),
+    ));
+  }
+
+  void _showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)),
+        title: const Text('Delete Account',
+            style:
+                TextStyle(fontWeight: FontWeight.w800)),
+        content: const Text(
+            'This will permanently delete your account and all your data. This action CANNOT be undone.\n\nAre you sure?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await _deleteAccount();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Delete Forever'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      final user = _authService.currentUser;
+      if (user == null) return;
+      // Delete user data from database
+      await FirebaseDatabase.instance.ref('users/${user.uid}').remove();
+      // Delete auth account
+      await user.delete();
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (_) => false,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Please log out and log back in before deleting your account.'),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+  }
+
+  Future<void> _launchWhatsApp() async {
+    const url = 'https://wa.me/923131426498?text=Hello%20GharTek%20Support';
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _callSupport() async {
+    final uri = Uri.parse('tel:+923131426498');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  void _showPaymentMethods() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Payment Methods',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.green[50],
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.green[200]!),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.money, color: Colors.green),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Cash on Delivery',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 14)),
+                        Text('Pay when your order arrives',
+                            style: TextStyle(
+                                color: Colors.grey, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text('Active',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.credit_card, color: Colors.grey[400]),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Card / Online Payment',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                                color: Colors.grey)),
+                        Text('Coming soon',
+                            style: TextStyle(
+                                color: Colors.grey, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text('Soon',
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddressesSheet() {
+    final user = _authService.currentUser;
+    if (user == null) return;
+    final db = FirebaseDatabase.instance.ref('users/${user.uid}/addresses');
+    final TextEditingController _addrCtrl = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                left: 20, right: 20, top: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Saved Addresses',
+                    style: TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 12),
+                StreamBuilder(
+                  stream: db.onValue,
+                  builder: (ctx, snap) {
+                    if (!snap.hasData || snap.data?.snapshot.value == null) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text('No saved addresses yet',
+                            style: TextStyle(color: Colors.grey[500])),
+                      );
+                    }
+                    final data = snap.data!.snapshot.value as Map<dynamic, dynamic>;
+                    return Column(
+                      children: data.entries.map((e) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF9F9F9),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.location_on,
+                                  color: Color(0xFFFF6B00), size: 18),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                  child: Text(e.value.toString(),
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500))),
+                              GestureDetector(
+                                onTap: () => db.child(e.key.toString()).remove(),
+                                child: const Icon(Icons.delete_outline,
+                                    color: Colors.red, size: 18),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _addrCtrl,
+                        decoration: InputDecoration(
+                          hintText: 'Add new address...',
+                          hintStyle: TextStyle(
+                              color: Colors.grey[400], fontSize: 13),
+                          filled: true,
+                          fillColor: const Color(0xFFF9F9F9),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                  color: Color(0xFFFF6B00), width: 1.5)),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        final val = _addrCtrl.text.trim();
+                        if (val.isNotEmpty) {
+                          db.push().set(val);
+                          _addrCtrl.clear();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF6B00),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                        elevation: 0,
+                      ),
+                      child: const Text('Add'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ── Data Model ────────────────────────────────────────────────────────────────
+class _MenuItem {
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final Color bgColor;
+  final Color iconColor;
+  final VoidCallback onTap;
+  final Widget? trailing;
+
+  const _MenuItem({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+    required this.bgColor,
+    required this.iconColor,
+    required this.onTap,
+    this.trailing,
+  });
+}

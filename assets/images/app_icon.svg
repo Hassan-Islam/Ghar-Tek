@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blue background circle -->
+  <circle cx="512" cy="512" r="512" fill="#2196F3"/>
+  
+  <!-- Shopping bag icon -->
+  <g transform="translate(512, 512)">
+    <!-- Bag body (trapezoid) -->
+    <path d="M-120 -40 L120 -40 L100 200 L-100 200 Z" 
+          fill="white" 
+          stroke="white" 
+          stroke-width="3"/>
+    
+    <!-- Left handle -->
+    <path d="M-80 -120 Q-80 -160 -40 -160 Q0 -160 0 -120" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="16" 
+          stroke-linecap="round"/>
+    
+    <!-- Right handle -->
+    <path d="M0 -120 Q0 -160 40 -160 Q80 -160 80 -120" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="16" 
+          stroke-linecap="round"/>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+{
+  "name": "ghartek-backend",
+  "version": "1.0.0",
+  "description": "Custom PostgreSQL backend (REST + WebSocket) that replaces Firebase Realtime Database for the GharTek app.",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "import": "node scripts/import_firebase_json.js",
+    "sync:firebase": "node scripts/sync_from_firebase.js",
+    "migrate:images": "node scripts/migrate_cloudinary_to_spaces.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1087.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.7.0",
+    "multer": "^2.2.0",
+    "pg": "^8.13.1",
+    "ws": "^8.18.0"
+  }
+}

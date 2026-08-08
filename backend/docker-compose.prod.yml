@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ghartek_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ghartek}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-ghartek}
+    volumes:
+      - ghartek_pg_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ghartek} -d ${POSTGRES_DB:-ghartek}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # Not exposed to the host/internet; only the backend reaches it over the
+    # private compose network.
+
+  backend:
+    build: .
+    container_name: ghartek_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgres://${POSTGRES_USER:-ghartek}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ghartek}
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-pak-delivers}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      AUTH_DISABLED: ${AUTH_DISABLED:-0}
+      SPACES_REGION: ${SPACES_REGION:-sfo3}
+      SPACES_BUCKET: ${SPACES_BUCKET:-ghartek-media}
+      SPACES_ENDPOINT: ${SPACES_ENDPOINT:-}
+      SPACES_KEY: ${SPACES_KEY:-}
+      SPACES_SECRET: ${SPACES_SECRET:-}
+    volumes:
+      - ./secrets:/app/secrets:ro
+      - ./data:/app/data
+    # Only Caddy talks to the backend; no direct host port needed.
+    expose:
+      - "8080"
+
+  caddy:
+    image: caddy:2
+    container_name: ghartek_caddy
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:?set SITE_ADDRESS in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  ghartek_pg_data:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,32 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build AAB Release",
+			"type": "shell",
+			"command": "flutter build appbundle --release",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Build APK Release",
+			"type": "shell",
+			"command": "flutter build apk --release",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Build APK Release (Explicit Flutter Path)",
+			"type": "shell",
+			"command": "\"C:\\Program Files\\flutter\\bin\\flutter.bat\"",
+			"args": [
+				"build",
+				"apk",
+				"--release"
+			],
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

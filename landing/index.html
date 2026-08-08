@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="GharTek — delivery at your doorstep. Order groceries and essentials from local stores."
+    />
+    <title>GharTek — Delivery at your doorstep</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --orange: #ff6b00;
+        --orange-light: #ff9a3d;
+        --text: #1a1a1a;
+        --text-muted: #5c5c5c;
+        --surface: #ffffff;
+        --radius: 16px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text);
+        line-height: 1.6;
+        background: #fafafa;
+      }
+
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(160deg, var(--orange) 0%, var(--orange-light) 100%);
+        color: #fff;
+        padding: 1.5rem 1.25rem 3rem;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1100px;
+        width: 100%;
+        margin: 0 auto 2rem;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 900;
+        letter-spacing: 0.06em;
+        text-decoration: none;
+        color: #fff;
+      }
+
+      .nav a.cta-small {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 999px;
+        transition: background 0.2s, border-color 0.2s;
+      }
+
+      .nav a.cta-small:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #fff;
+      }
+
+      .hero-inner {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 1rem 0;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        backdrop-filter: blur(4px);
+      }
+
+      .hero h1 {
+        font-size: clamp(2.25rem, 6vw, 3.25rem);
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+      }
+
+      .hero p.lead {
+        font-size: 1.125rem;
+        opacity: 0.92;
+        max-width: 28rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.85rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: #fff;
+        color: var(--orange);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.75);
+      }
+
+      .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        margin-top: -3rem;
+        position: relative;
+        z-index: 1;
+        padding-bottom: 4rem;
+      }
+
+      .card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+      }
+
+      .card .icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .card h3 {
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .card p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      .section {
+        padding: 3rem 0 4rem;
+        text-align: center;
+      }
+
+      .section h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .section > p {
+        color: var(--text-muted);
+        max-width: 32rem;
+        margin: 0 auto 2rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 1.25rem;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        border-top: 1px solid #eee;
+      }
+
+      footer a {
+        color: var(--orange);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="nav" aria-label="Main">
+        <a class="logo" href="#">GharTek</a>
+        <a class="cta-small" href="#download">Get the app</a>
+      </nav>
+
+      <div class="hero-inner">
+        <span class="hero-badge">Fast local delivery</span>
+        <h1>Delivery at your doorstep</h1>
+        <p class="lead">
+          Order groceries and daily essentials from trusted stores near you —
+          tracked, delivered, and simple.
+        </p>
+        <div class="hero-actions" id="download">
+          <a
+            class="btn btn-primary"
+            href="https://play.google.com/store/apps/details?id=com.ghartek.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download on Google Play
+          </a>
+          <a class="btn btn-ghost" href="#features">Learn more</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="features" id="features" aria-label="Features">
+        <article class="card">
+          <div class="icon" aria-hidden="true">🛒</div>
+          <h3>Shop local</h3>
+          <p>Browse products from merchants in your city and add to cart in seconds.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">🚴</div>
+          <h3>Live tracking</h3>
+          <p>Follow your order from store to door with real-time updates.</p>
+        </article>
+        <article class="card">
+          <div class="icon" aria-hidden="true">💬</div>
+          <h3>Support when you need it</h3>
+          <p>Message the GharTek team directly from the app for help with orders.</p>
+        </article>
+      </section>
+
+      <section class="section">
+        <h2>Ready to order?</h2>
+        <p>Install GharTek on Android and start shopping from stores in your area.</p>
+        <a
+          class="btn btn-primary"
+          href="https://play.google.com/store/apps/details?id=com.ghartek.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="display: inline-flex"
+        >
+          Get GharTek on Play Store
+        </a>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; <span id="year"></span> GharTek. All rights reserved.</p>
+      <p style="margin-top: 0.5rem">
+        <a href="mailto:ghartekinfo@gmail.com">ghartekinfo@gmail.com</a>
+      </p>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

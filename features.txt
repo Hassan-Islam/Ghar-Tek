@@ -1,0 +1,170 @@
+GHARTEK FLUTTER APP - COMPLETE FEATURE INVENTORY
+Generated: 2026-03-29
+
+==================================================
+1) ARCHITECTURE OVERVIEW
+==================================================
+- Frontend: Flutter multi-platform app
+- Backend: Firebase Auth + Firebase Realtime Database
+- Core services: Google Sign-In, Geolocator, Local Notifications
+- Role routing: Splash checks users/{uid}/role and sends to:
+  - Customer -> MainLayout
+  - Admin -> AdminDashboard
+  - Rider -> RiderDashboard
+  - Merchant -> MerchantDashboard
+
+Main files:
+- lib/main.dart
+- lib/pages/splash_screen.dart
+- lib/pages/main_layout.dart
+- lib/services/auth_service.dart
+
+==================================================
+2) ROLE-BASED FEATURES
+==================================================
+
+A) CUSTOMER / USER
+- Auth:
+  - Email/password signup-login
+  - Google Sign-In
+  - Forgot password, email verification
+  - File: lib/services/auth_service.dart
+- Profile:
+  - Edit name, phone, gender, address
+  - Files: lib/pages/profile_page.dart, lib/pages/edit_profile_page.dart
+- Shop browse:
+  - Search/filter shops, categories, open-close logic
+  - Files: lib/home_page.dart, lib/pages/shops_page.dart
+- Cart + checkout:
+  - Delivery fee, tax, promo, payment method handling
+  - Files: lib/pages/cart_page.dart, lib/pages/checkout_page.dart
+- Shop orders:
+  - Place orders in shop-orders with realtime tracking
+  - Files: lib/pages/order_success_page.dart, lib/pages/order_tracking_page_fixed.dart
+- Custom orders:
+  - 3-step form with urgency/time/fee logic
+  - File: lib/pages/custom_order_full_form.dart
+- My orders:
+  - Active/past tabs and status updates
+  - File: lib/pages/my_orders_page.dart
+- Notifications:
+  - Broadcast + order status notifications
+  - File: lib/services/notification_service.dart
+- Settings + legal:
+  - Notification toggle, theme, legal pages
+  - Files: lib/pages/settings_page.dart, lib/pages/legal/*.dart
+
+B) ADMIN
+- Dashboard tabs:
+  - Dashboard, Orders, Shops, Khata, More
+  - File: lib/pages/admin_dashboard.dart
+- Orders management:
+  - Active/Delivered/Merchant Review, status updates, cancel reasons
+  - File: lib/pages/admin_orders_page.dart
+- Custom orders management:
+  - Separate handling and processing
+  - File: lib/pages/admin_custom_orders_page.dart
+- Shops management:
+  - Create/update/delete shops, hours, metadata
+  - File: lib/pages/admin_shops_page.dart
+- Products management:
+  - Shop menu CRUD and product edits
+  - File: lib/pages/admin_products_page.dart
+- Merchant management:
+  - Assign shops, toggle active, permissions, create merchant
+  - File: lib/pages/admin_merchant_management_page.dart
+- Users/admin management:
+  - Ban/unban, role update, admin controls
+  - Files: lib/pages/admin_users_page.dart, lib/pages/admin_settings_page.dart
+- App settings:
+  - Fees, promo, payment methods, ads, app-control
+  - File: lib/pages/admin_app_settings_page.dart
+- Notifications:
+  - Broadcast composer + history
+  - File: lib/pages/admin_notifications_page.dart
+- Legal pages management:
+  - File: lib/pages/admin_legal_pages.dart
+- Khata ledger:
+  - Shop payments, expenses, owner ledger, settings-based calculations
+  - File: lib/pages/admin_khata_page.dart
+- Cash analytics:
+  - Revenue/profit/order-status analytics
+  - File: lib/pages/admin_cash_page.dart
+
+C) RIDER
+- Rider dashboard with stats and theme toggle
+  - File: lib/pages/rider_dashboard.dart
+- Rider orders:
+  - Pickup, on-way, delivered workflows
+  - File: lib/pages/rider_orders_page.dart
+- Rider notifications:
+  - New order alert service
+  - File: lib/services/rider_notification_service.dart
+- Rider location sharing:
+  - Writes riderLocation to order nodes for customer tracking
+
+D) MERCHANT
+- Merchant dashboard and shop switching
+  - File: lib/pages/merchant_dashboard.dart
+- Merchant order lifecycle actions
+  - confirm -> preparing -> on_the_way -> delivered
+- Menu/deals management:
+  - stock, price, schedule, low-stock handling
+  - File: lib/pages/merchant_menu_deals_page.dart
+- Merchant notifications:
+  - alarm-style new-order alerts
+  - File: lib/services/merchant_notification_service.dart
+- Merchant permissions model:
+  - canUpdateOrderStatus
+  - canManageProducts
+  - canEditPrices
+  - canToggleShopOpen
+  - canViewRevenue
+
+==================================================
+3) CORE WORKFLOWS
+==================================================
+
+A) SHOP ORDER FLOW
+Customer checkout -> shop-orders/{id} pending -> admin/merchant confirm -> preparing -> rider on_way -> delivered -> my orders past
+
+B) CUSTOM ORDER FLOW
+Customer 3-step form -> custom-orders/{id} pending -> admin/merchant/rider handling -> delivered/cancelled
+
+C) MERCHANT FLOW
+Assigned shop select -> new order alerts -> status updates -> product/deals management (permission-based)
+
+D) RIDER FLOW
+New actionable orders alert -> pickup -> live location updates -> delivered
+
+E) ADMIN KHATA FLOW
+Delivered orders aggregate -> commission + delivery revenue -> shop payouts -> expenses + owner drawings
+
+==================================================
+4) IMPORTANT FIREBASE PATHS
+==================================================
+- users/{uid}
+- shop-orders/{orderId}
+- custom-orders/{orderId}
+- shops/{shopId}
+- shops/{shopId}/menu/{productId}
+- merchant_profiles/{uid}
+- settings/fees
+- settings/payment-methods/{key}
+- settings/ads/{id}
+- settings/app-control
+- promo-codes/{code}
+- notifications/admin/inbox
+- notifications/history
+- notifications/broadcast
+- notifications/user/{uid}
+- notifications/merchant/{uid}
+- notifications/rider/inbox
+- khata/shop-payments/{shopId}
+- khata/expenses/{id}
+- khata/maalik/{id}
+
+==================================================
+5) IMPLEMENTATION MAP (PC ADMIN)
+==================================================
+PC admin module removed from this project.
